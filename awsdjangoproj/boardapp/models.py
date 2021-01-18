@@ -66,54 +66,105 @@ class User(AbstractBaseUser):
         db_table = 'auth_user'
 
 
+# class BoardCategories(models.Model):
+#     category_type = models.CharField(max_length=45)
+#     category_code = models.CharField(max_length=100)
+#     category_name = models.CharField(max_length=100)
+#     category_desc = models.CharField(max_length=100)
+#     list_count = models.IntegerField(blank=True, null=True)
+#     authority = models.IntegerField(blank=True, null=True)
+#     creation_date = models.DateTimeField(default=timezone.now)
+#     last_update_date = models.DateTimeField(default=timezone.now)
+
+#     def __str__(self):
+#         return '%s (%s)' % (self.category_name, self.category_code)
+
+#     class Meta:
+#         managed = False
+#         db_table = 'board_categories'
+
+
+# class Boards(models.Model):
+#     category = models.ForeignKey(BoardCategories, models.DO_NOTHING)
+#     user = models.ForeignKey(User, models.DO_NOTHING)
+#     title = models.CharField(max_length=300)
+#     content = models.TextField()
+#     registered_date = models.DateTimeField(default=timezone.now)
+#     last_update_date = models.DateTimeField(default=timezone.now)
+#     view_count = models.IntegerField(blank=True, default=0)
+#     image = models.ImageField(
+#         upload_to="images/%Y/%m/%d", storage=MediaStorage(), blank=True)
+
+#     def __str__(self):
+#         return '[%d] %.40s' % (self.id, self.title)
+
+#     class Meta:
+#         managed = False
+#         db_table = 'boards'
+
+
+# class BoardReplies(models.Model):
+#     article = models.ForeignKey(Boards, models.DO_NOTHING)
+#     user = models.ForeignKey(User, models.DO_NOTHING)
+#     level = models.IntegerField(blank=True, null=True)
+#     content = models.TextField()
+#     registered_date = models.DateTimeField(default=timezone.now)
+#     last_update_date = models.DateTimeField(default=timezone.now)
+#     reference_reply_id = models.IntegerField(blank=True, null=True)
+
+#     def __str__(self):
+#         return '[%d] %.40s - [%d] %.40s' % (self.article.id, self.article.title, self.id, self.content)
+
+#     class Meta:
+#         managed = False
+#         db_table = 'board_replies'
+
+
+# class BoardLikes(models.Model):
+#     article = models.ForeignKey(Boards, models.DO_NOTHING)
+#     user = models.ForeignKey(User, models.DO_NOTHING)
+#     registered_date = models.DateTimeField(default=timezone.now)
+
+#     def __str__(self):
+#         return '[%d] %.40s - %s' % (self.article.id, self.article.title, self.user.last_name)
+
+#     class Meta:
+#         managed = False
+#         db_table = 'board_likes'
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+
+
 class BoardCategories(models.Model):
     category_type = models.CharField(max_length=45)
     category_code = models.CharField(max_length=100)
     category_name = models.CharField(max_length=100)
-    category_desc = models.CharField(max_length=100)
+    category_desc = models.CharField(max_length=200)
     list_count = models.IntegerField(blank=True, null=True)
     authority = models.IntegerField(blank=True, null=True)
-    creation_date = models.DateTimeField(default=timezone.now)
-    last_update_date = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return '%s (%s)' % (self.category_name, self.category_code)
+    creation_date = models.DateTimeField(blank=True, null=True)
+    last_update_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'board_categories'
-
-
-class Boards(models.Model):
-    category = models.ForeignKey(BoardCategories, models.DO_NOTHING)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    title = models.CharField(max_length=300)
-    content = models.TextField()
-    registered_date = models.DateTimeField(default=timezone.now)
-    last_update_date = models.DateTimeField(default=timezone.now)
-    view_count = models.IntegerField(blank=True, default=0)
-    image = models.ImageField(
-        upload_to="images/%Y/%m/%d", storage=MediaStorage(), blank=True)
-
-    def __str__(self):
-        return '[%d] %.40s' % (self.id, self.title)
-
-    class Meta:
-        managed = False
-        db_table = 'boards'
+# Unable to inspect table 'board'
+# The error was: (1146, "Table 'awsdjangoprojdb.board' doesn't exist")
 
 
 class BoardReplies(models.Model):
-    article = models.ForeignKey(Boards, models.DO_NOTHING)
-    user = models.ForeignKey(User, models.DO_NOTHING)
+    article = models.ForeignKey('Boards', models.DO_NOTHING)
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING)
     level = models.IntegerField(blank=True, null=True)
     content = models.TextField()
-    registered_date = models.DateTimeField(default=timezone.now)
-    last_update_date = models.DateTimeField(default=timezone.now)
     reference_reply_id = models.IntegerField(blank=True, null=True)
-
-    def __str__(self):
-        return '[%d] %.40s - [%d] %.40s' % (self.article.id, self.article.title, self.id, self.content)
+    registered_date = models.DateTimeField(blank=True, null=True)
+    last_update_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -121,13 +172,16 @@ class BoardReplies(models.Model):
 
 
 class BoardLikes(models.Model):
-    article = models.ForeignKey(Boards, models.DO_NOTHING)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    registered_date = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return '[%d] %.40s - %s' % (self.article.id, self.article.title, self.user.last_name)
+    # Field name made lowercase.
+    id = models.AutoField(db_column='Id', primary_key=True)
+    article = models.ForeignKey('Boards', models.DO_NOTHING)
+    # Field name made lowercase.
+    user = models.ForeignKey(
+        'AuthUser', models.DO_NOTHING, db_column='User_id')
+    registered_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'board_likes'
+# Unable to inspect table 'board_images'
+# The error was: (1146, "Table 'awsdjangoprojdb.board_images' doesn't exist")
